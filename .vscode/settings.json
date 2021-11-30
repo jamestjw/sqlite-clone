@@ -1,0 +1,21 @@
+{
+    "files.associations": {
+        "*.html.erb": "erb",
+        "fcntl.h": "c",
+        "cstdlib": "c",
+        "defs.h": "c",
+        "row.h": "c",
+        "locale": "c",
+        "ostream": "c",
+        "*.tcc": "c",
+        "memory": "c",
+        "stdio.h": "c",
+        "string.h": "c",
+        "misc.h": "c",
+        "types.h": "c",
+        "cursor.h": "c",
+        "stdlib.h": "c",
+        "pager.h": "c",
+        "input.h": "c"
+    }
+}
