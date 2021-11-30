@@ -21,6 +21,12 @@ Pager* pager_open(const char* filename) {
   Pager* pager = malloc(sizeof(Pager));
   pager->file_descriptor = fd;
   pager->file_length = file_length;
+  pager->num_pages = file_length / PAGE_SIZE;
+
+  if (file_length % PAGE_SIZE != 0) {
+    printf("Db file is not a whole number of pages. Corrupt file.\n");
+    exit(EXIT_FAILURE);
+  }
 
   for (uint32_t i = 0; i < TABLE_MAX_PAGES; i++) {
     pager->pages[i] = NULL;
@@ -29,7 +35,7 @@ Pager* pager_open(const char* filename) {
   return pager;
 }
 
-void pager_flush(Pager* pager, uint32_t page_num, uint32_t size) {
+void pager_flush(Pager* pager, uint32_t page_num) {
   if (pager->pages[page_num] == NULL) {
     printf("Tried to flush null page\n");
     exit(EXIT_FAILURE);
@@ -43,7 +49,9 @@ void pager_flush(Pager* pager, uint32_t page_num, uint32_t size) {
     exit(EXIT_FAILURE);
   }
 
-  ssize_t bytes_written = write(pager->file_descriptor, pager->pages[page_num], size);
+  // We write entire nodes to memory, hence the num of bytes
+  // to write is the PAGE_SIZE
+  ssize_t bytes_written = write(pager->file_descriptor, pager->pages[page_num], PAGE_SIZE);
 
   if (bytes_written == -1) {
     printf("Error writing: %d\n", errno);
@@ -80,6 +88,12 @@ void* get_page(Pager* pager, uint32_t page_num) {
     // Here page either contains what was read from memory
     // or is empty.
     pager->pages[page_num] = page;
+
+    // If we create a new page, update the pager with the 
+    // new page_num
+    if (page_num >= pager->num_pages) {
+      pager->num_pages = page_num + 1;
+    }
   }
 
   return pager->pages[page_num];

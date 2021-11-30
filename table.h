@@ -6,7 +6,7 @@
 #include "pager.h"
 
 typedef struct {
-  uint32_t num_rows;
+  uint32_t root_page_num; // A table needs this to identify the root of its b+-tree
   Pager* pager;
 } Table;
 

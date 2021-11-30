@@ -4,9 +4,13 @@
 #include "defs.h"
 #include "table.h"
 
+// Identifies a position in the table
+// by pointing to a particular cell in
+// a node (page) of a b+ tree
 typedef struct {
   Table* table;
-  uint32_t row_num;
+  uint32_t page_num;
+  uint32_t cell_num;
   bool end_of_table;
 } Cursor;
 
