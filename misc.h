@@ -21,6 +21,6 @@ MetaCommandResult do_meta_command(InputBuffer* input_buffer, Table* table);
 PrepareResult prepare_insert(InputBuffer* input_buffer, Statement* statement);
 PrepareResult prepare_statement(InputBuffer *input_buffer, Statement *statement);
 void print_constants();
-void print_leaf_node(void* node);
+void print_tree(Pager* pager, uint32_t page_num, uint32_t indentation_level);
 
 #endif
