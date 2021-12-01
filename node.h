@@ -23,7 +23,9 @@ static const uint32_t COMMON_NODE_HEADER_SIZE = NODE_TYPE_SIZE + IS_ROOT_SIZE + 
 // Leaf node header layout
 static const uint32_t LEAF_NODE_NUM_CELLS_SIZE = sizeof(uint32_t); // Cells are key value pairs in leaf nodes
 static const uint32_t LEAF_NODE_NUM_CELLS_OFFSET = COMMON_NODE_HEADER_SIZE;
-static const uint32_t LEAF_NODE_HEADER_SIZE = COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE;
+static const uint32_t LEAF_NODE_NEXT_LEAF_SIZE = sizeof(uint32_t);
+static const uint32_t LEAF_NODE_NEXT_LEAF_OFFSET = LEAF_NODE_NUM_CELLS_OFFSET + LEAF_NODE_NUM_CELLS_SIZE;
+static const uint32_t LEAF_NODE_HEADER_SIZE = COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE + LEAF_NODE_NEXT_LEAF_SIZE;
 
 // Leaf node body layout
 // The body of a leaf node contains an array of cells, where
@@ -66,6 +68,7 @@ void* leaf_node_value(void* node, uint32_t cell_num);
 void initialize_leaf_node(void* node);
 void leaf_node_insert(Cursor* cursor, uint32_t key, Row* value);
 void leaf_node_split_and_insert(Cursor* cursor, uint32_t key, Row* value);
+uint32_t* leaf_node_next_leaf(void* node);
 
 void initialize_internal_node(void* node); 
 uint32_t* internal_node_num_keys(void* node);

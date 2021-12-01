@@ -5,16 +5,15 @@
 #include "node.h"
 
 Cursor* table_start(Table* table) {
-  Cursor* cursor = malloc(sizeof(Cursor));
-  cursor->table = table;
-  cursor->page_num = table->root_page_num;
-  cursor->cell_num = 0;
-  
-  void* root_node = get_page(table->pager, table->root_page_num);
-  uint32_t num_cells = *leaf_node_num_cells(root_node);
+  // Search for key 0, even if this does
+  // not exist in the table, this will return
+  // the smallest key that does exist.
+  Cursor* cursor = table_find(table, 0);
 
+  void* node = get_page(table->pager, cursor->page_num);
+  uint32_t num_cells = *leaf_node_num_cells(node);
   cursor->end_of_table = (num_cells == 0);
-
+  
   return cursor;
 }
 
@@ -103,6 +102,13 @@ void cursor_advance(Cursor* cursor) {
   cursor->cell_num += 1;
 
   if (cursor->cell_num >= (*leaf_node_num_cells(node))) {
-    cursor->end_of_table = true;
+    uint32_t next_page_num = *leaf_node_next_leaf(node);
+    if (next_page_num == 0) {
+      // This is the rightmost leaf since it has no siblings
+      cursor->end_of_table = true;
+    } else {
+      cursor->page_num = next_page_num;
+      cursor->cell_num = 0;
+    }
   }
 }
