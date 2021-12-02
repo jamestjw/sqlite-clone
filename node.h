@@ -49,6 +49,7 @@ static const uint32_t INTERNAL_NODE_HEADER_SIZE = COMMON_NODE_HEADER_SIZE + INTE
 static const uint32_t INTERNAL_NODE_KEY_SIZE = sizeof(uint32_t);
 static const uint32_t INTERNAL_NODE_CHILD_SIZE = sizeof(uint32_t);
 static const uint32_t INTERNAL_NODE_CELL_SIZE = INTERNAL_NODE_KEY_SIZE + INTERNAL_NODE_CHILD_SIZE;
+static const uint32_t INTERNAL_NODE_MAX_CELLS = 3; // Small number for testing
 
 static const uint32_t LEAF_NODE_RIGHT_SPLIT_COUNT = (LEAF_NODE_MAX_CELLS + 1) / 2;
 static const uint32_t LEAF_NODE_LEFT_SPLIT_COUNT = (LEAF_NODE_MAX_CELLS + 1) - LEAF_NODE_RIGHT_SPLIT_COUNT;
@@ -60,6 +61,7 @@ void set_node_root(void* node, bool is_root);
 // Creates a new root with the right child as a child
 void create_new_root(Table* table, uint32_t right_child_index);
 uint32_t get_node_max_key(void* node);
+uint32_t* node_parent(void* node);
 
 uint32_t* leaf_node_num_cells(void* node);
 void* leaf_node_cell(void* node, uint32_t cell_num);
@@ -75,7 +77,11 @@ uint32_t* internal_node_num_keys(void* node);
 // Return pointer to the further right child
 uint32_t* internal_node_right_child(void* node);
 uint32_t* internal_node_cell(void* node, uint32_t cell_num);
+// Access the i-th child of an internal node
 uint32_t* internal_node_child(void* node, uint32_t child_num);
 uint32_t* internal_node_key(void* node, uint32_t key_num);
+void update_internal_node_key(void* node, uint32_t old_key, uint32_t new_key);
+uint32_t internal_node_find_child(void* node, uint32_t key); 
+void internal_node_insert(Table* table, uint32_t parent_page_num, uint32_t child_page_num);
 
 #endif
